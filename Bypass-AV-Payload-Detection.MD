@@ -1,5 +1,6 @@
 # Bypassing Antivirus Payload Detection
 
+<img width="704" alt="Screen Shot 2021-12-03 at 5 21 54 PM" src="https://user-images.githubusercontent.com/72598486/144680706-d3b91529-e530-4dcf-b0b9-50a0c94413d2.png">
 
 
 # MSFvenom reverse stageless shells 
