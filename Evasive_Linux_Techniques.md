@@ -51,3 +51,15 @@ this:
 setenforce 0
 echo SELINUX=disabled > /etc/selinux/config
 ```
+
+## Hijacking Libraries with `LD_PRELOAD`
+
+The `LD_PRELOAD` environment variable allows attackers to load a malicious shared object (SO) file before any other library during program execution. This can be used to override system functions, such as `malloc()`, with custom implementations, enabling malicious behavior.
+
+For example, to execute the `ls` command with a custom implementation of `malloc()`, an attacker would run:
+
+```sh
+LD_PRELOAD=/path/to/my/malloc.so /bin/ls
+```
+
+In this case, `/path/to/my/malloc.so` is a custom shared object that will replace the default implementation of `malloc()` (or any other overridden functions). This technique is commonly used for data exfiltration, logging sensitive information, or bypassing security mechanisms.
